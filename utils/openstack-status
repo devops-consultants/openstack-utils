@@ -16,6 +16,9 @@
 # under the License.
 #
 
+PKG_QUERY="dpkg -s"
+[[ -f /etc/redhat-release ]] && PKG_QUERY="rpm -q"
+
 systemctl --version >/dev/null 2>&1 && systemctl=1
 [ "$systemctl" ] || RUNLEVEL=$(LANG=C who -r | sed 's/.*run-level \([0-9]\).*/\1/')
 
@@ -43,25 +46,25 @@ for conf in nova/nova.conf keystone/keystone.conf glance/glance-registry.conf; d
     fi
 done
 
-rpm -q openstack-nova-common > /dev/null && nova='nova'
-rpm -q openstack-glance > /dev/null && glance='glance'
-rpm -q openstack-dashboard > /dev/null && dashboard='httpd'
-rpm -q openstack-keystone > /dev/null && keystone='keystone'
-rpm -q openstack-neutron > /dev/null && neutron='neutron' ||
-{ rpm -q openstack-quantum > /dev/null && neutron='quantum'; }
-rpm -q openstack-swift > /dev/null && swift='swift'
-rpm -q openstack-cinder > /dev/null && cinder='cinder'
-rpm -q openstack-ceilometer-common > /dev/null && ceilometer='ceilometer'
-rpm -q openstack-heat-common > /dev/null && heat='heat'
-rpm -q openstack-sahara > /dev/null && sahara='sahara'
-rpm -q openstack-trove > /dev/null && trove='trove'
-rpm -q openstack-tuskar > /dev/null && tuskar='tuskar'
-rpm -q openstack-ironic-common > /dev/null && ironic='ironic'
-rpm -q libvirt > /dev/null && libvirtd='libvirtd'
-rpm -q openvswitch > /dev/null && openvswitch='openvswitch'
-rpm -q qpid-cpp-server > /dev/null && qpidd='qpidd'
-rpm -q rabbitmq-server > /dev/null && rabbitmq='rabbitmq-server'
-rpm -q memcached > /dev/null && memcached='memcached'
+${PKG_QUERY} openstack-nova-common > /dev/null && nova='nova'
+${PKG_QUERY} openstack-glance > /dev/null && glance='glance'
+${PKG_QUERY} openstack-dashboard > /dev/null && dashboard='httpd'
+${PKG_QUERY} openstack-keystone > /dev/null && keystone='keystone'
+${PKG_QUERY} openstack-neutron > /dev/null && neutron='neutron' ||
+{ ${PKG_QUERY} openstack-quantum > /dev/null && neutron='quantum'; }
+${PKG_QUERY} openstack-swift > /dev/null && swift='swift'
+${PKG_QUERY} openstack-cinder > /dev/null && cinder='cinder'
+${PKG_QUERY} openstack-ceilometer-common > /dev/null && ceilometer='ceilometer'
+${PKG_QUERY} openstack-heat-common > /dev/null && heat='heat'
+${PKG_QUERY} openstack-sahara > /dev/null && sahara='sahara'
+${PKG_QUERY} openstack-trove > /dev/null && trove='trove'
+${PKG_QUERY} openstack-tuskar > /dev/null && tuskar='tuskar'
+${PKG_QUERY} openstack-ironic-common > /dev/null && ironic='ironic'
+${PKG_QUERY} libvirt > /dev/null && libvirtd='libvirtd'
+${PKG_QUERY} openvswitch > /dev/null && openvswitch='openvswitch'
+${PKG_QUERY} qpid-cpp-server > /dev/null && qpidd='qpidd'
+${PKG_QUERY} rabbitmq-server > /dev/null && rabbitmq='rabbitmq-server'
+${PKG_QUERY} memcached > /dev/null && memcached='memcached'
 
 if test "$qpidd" && test "$rabbitmq"; then
   # Give preference to rabbit
