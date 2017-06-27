@@ -16,8 +16,49 @@
 # under the License.
 #
 
-PKG_QUERY="dpkg -s"
-[[ -f /etc/redhat-release ]] && PKG_QUERY="rpm -q"
+if [ -f /etc/redhat-release ]; then
+  PKG_QUERY="rpm -q"
+  NOVA_COMMON_PKG="openstack-nova-common"
+  GLANCE_PKG="openstack-glance" 
+  HORIZON_PKG="openstack-dashboard" 
+  KEYSTONE_PKG="openstack-keystone"
+  NEUTRON_PKG="openstack-neutron" 
+  QUANTUM_PKG="openstack-quantum" 
+  SWIFT_PKG="openstack-swift" 
+  CINDER_PKG="openstack-cinder" 
+  CEILOMTER_PKG="openstack-ceilometer-common"
+  HEAT_PKG="openstack-heat-common" 
+  SAHARA_PKG="openstack-sahara" 
+  TROVE_PKG="openstack-trove"
+  TUSKAR_PKG="openstack-tuskar"
+  IRONIC_PKG="openstack-ironic-common"
+  LIBVIRT_PKG="libvirt"   
+  OPENVSWITCH_PKG="openvswitch" 
+  QPID_PKG="qpid-cpp-server" 
+  RABBITMQ_PKG="rabbitmq-server" 
+  MEMCACHED_PKG="memcached"
+else
+  PKG_QUERY="dpkg -s"
+  NOVA_COMMON_PKG="nova-common"
+  GLANCE_PKG="glance-common" 
+  HORIZON_PKG="openstack-dashboard" 
+  KEYSTONE_PKG="keystone"
+  NEUTRON_PKG="neutron-common" 
+  QUANTUM_PKG="quantum" 
+  SWIFT_PKG="swift" 
+  CINDER_PKG="cinder-common" 
+  CEILOMTER_PKG="ceilometer-common"
+  HEAT_PKG="heat-common" 
+  SAHARA_PKG="sahara" 
+  TROVE_PKG="trove-common"
+  TUSKAR_PKG="tuskar"
+  IRONIC_PKG="ironic-common"
+  LIBVIRT_PKG="libvirt"   
+  OPENVSWITCH_PKG="openvswitch-common" 
+  QPID_PKG="qpidd" 
+  RABBITMQ_PKG="rabbitmq-server" 
+  MEMCACHED_PKG="memcached"
+fi
 
 systemctl --version >/dev/null 2>&1 && systemctl=1
 [ "$systemctl" ] || RUNLEVEL=$(LANG=C who -r | sed 's/.*run-level \([0-9]\).*/\1/')
@@ -46,25 +87,24 @@ for conf in nova/nova.conf keystone/keystone.conf glance/glance-registry.conf; d
     fi
 done
 
-${PKG_QUERY} openstack-nova-common > /dev/null && nova='nova'
-${PKG_QUERY} openstack-glance > /dev/null && glance='glance'
-${PKG_QUERY} openstack-dashboard > /dev/null && dashboard='httpd'
-${PKG_QUERY} openstack-keystone > /dev/null && keystone='keystone'
-${PKG_QUERY} openstack-neutron > /dev/null && neutron='neutron' ||
-{ ${PKG_QUERY} openstack-quantum > /dev/null && neutron='quantum'; }
-${PKG_QUERY} openstack-swift > /dev/null && swift='swift'
-${PKG_QUERY} openstack-cinder > /dev/null && cinder='cinder'
-${PKG_QUERY} openstack-ceilometer-common > /dev/null && ceilometer='ceilometer'
-${PKG_QUERY} openstack-heat-common > /dev/null && heat='heat'
-${PKG_QUERY} openstack-sahara > /dev/null && sahara='sahara'
-${PKG_QUERY} openstack-trove > /dev/null && trove='trove'
-${PKG_QUERY} openstack-tuskar > /dev/null && tuskar='tuskar'
-${PKG_QUERY} openstack-ironic-common > /dev/null && ironic='ironic'
-${PKG_QUERY} libvirt > /dev/null && libvirtd='libvirtd'
-${PKG_QUERY} openvswitch > /dev/null && openvswitch='openvswitch'
-${PKG_QUERY} qpid-cpp-server > /dev/null && qpidd='qpidd'
-${PKG_QUERY} rabbitmq-server > /dev/null && rabbitmq='rabbitmq-server'
-${PKG_QUERY} memcached > /dev/null && memcached='memcached'
+${PKG_QUERY} ${NOVA_COMMON_PKG} > /dev/null && nova='nova'
+${PKG_QUERY} ${GLANCE_PKG} > /dev/null && glance='glance'
+${PKG_QUERY} ${HORIZON_PKG} > /dev/null && dashboard='httpd'
+${PKG_QUERY} ${NEUTRON_PKG} > /dev/null && neutron='neutron' ||
+{ ${PKG_QUERY} ${QUANTUM_PKG} > /dev/null && neutron='quantum'; }
+${PKG_QUERY} ${SWIFT_PKG} > /dev/null && swift='swift'
+${PKG_QUERY} ${CINDER_PKG} > /dev/null && cinder='cinder'
+${PKG_QUERY} ${CEILOMTER_PKG} > /dev/null && ceilometer='ceilometer'
+${PKG_QUERY} ${HEAT_PKG} > /dev/null && heat='heat'
+${PKG_QUERY} ${SAHARA_PKG} > /dev/null && sahara='sahara'
+${PKG_QUERY} ${TROVE_PKG} > /dev/null && trove='trove'
+${PKG_QUERY} ${TUSKAR_PKG} > /dev/null && tuskar='tuskar'
+${PKG_QUERY} ${IRONIC_PKG} > /dev/null && ironic='ironic'
+${PKG_QUERY} ${LIBVIRT_PKG} > /dev/null && libvirtd='libvirtd'
+${PKG_QUERY} ${OPENVSWITCH_PKG} > /dev/null && openvswitch='openvswitch'
+${PKG_QUERY} ${QPID_PKG} > /dev/null && qpidd='qpidd'
+${PKG_QUERY} ${RABBITMQ_PKG} > /dev/null && rabbitmq='rabbitmq-server'
+${PKG_QUERY} ${MEMCACHED_PKG} > /dev/null && memcached='memcached'
 
 if test "$qpidd" && test "$rabbitmq"; then
   # Give preference to rabbit
