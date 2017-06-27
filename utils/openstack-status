@@ -18,6 +18,7 @@
 
 if [ -f /etc/redhat-release ]; then
   PKG_QUERY="rpm -q"
+  WHATPROVIDES_QUERY="rpm -q --whatprovides"
   NOVA_COMMON_PKG="openstack-nova-common"
   GLANCE_PKG="openstack-glance" 
   HORIZON_PKG="openstack-dashboard" 
@@ -39,6 +40,7 @@ if [ -f /etc/redhat-release ]; then
   MEMCACHED_PKG="memcached"
 else
   PKG_QUERY="dpkg -s"
+  WHATPROVIDES_QUERY="dpkg -S"
   NOVA_COMMON_PKG="nova-common"
   GLANCE_PKG="glance-common" 
   HORIZON_PKG="openstack-dashboard" 
@@ -66,7 +68,7 @@ systemctl --version >/dev/null 2>&1 && systemctl=1
 # Figure out what provides mysqld services, if installed locally
 get_mysql_variant() {
     local r
-    r=$(rpm -q --whatprovides mysql-server)
+    r=$(${WHATPROVIDES_QUERY} mysql-server)
     if [ $? -ne 0 ]; then
         return 1
     fi
